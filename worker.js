@@ -105,7 +105,7 @@ const opcoesQr = p => ({
   cor: p.cor,
   fundo: p.fundo,
   estilo: p.estilo,
-  tema: p.tema,
+  tema: p.tema || 'light',
   borda: p.borda === 'false' ? false : p.borda,
   raio: p.raio,
   mascara: p.mascara !== undefined && p.mascara !== '' ? Number(p.mascara) : undefined,
@@ -249,7 +249,7 @@ export default {
       if (mBarSvg) {
         const valor = p.valor ?? p.conteudo ?? p.codigo;
         if (valor === undefined || valor === '') throw new RangeError('Informe o código em "valor".');
-        const { svg } = gerarBarrasSvg(mBarSvg[1], String(valor).slice(0, 200), { modulo: p.modulo, altura: p.altura, texto: p.texto, cor: p.cor, corTexto: p.corTexto, fundo: p.fundo, tema: p.tema, borda: p.borda === 'false' ? false : p.borda, raio: p.raio });
+        const { svg } = gerarBarrasSvg(mBarSvg[1], String(valor).slice(0, 200), { modulo: p.modulo, altura: p.altura, texto: p.texto, cor: p.cor, corTexto: p.corTexto, fundo: p.fundo, tema: p.tema || 'light', borda: p.borda === 'false' ? false : p.borda, raio: p.raio });
         return svgResponse(svg, rh);
       }
 

@@ -20,11 +20,12 @@
 ### Verificação
 
 O codificador de QR foi conferido por três métodos:
-- Matrizes de módulos **idênticas** às de uma implementação de referência independente em 1.742 combinações (versões 1–40, níveis L/M/Q/H, máscaras 0 e 5, modos numérico, alfanumérico e byte).
-- Decodificação dos códigos gerados com **jsQR** e **ZXing**.
+- Matrizes de módulos **idênticas** às de uma implementação de referência independente (biblioteca `qrcode` 1.5.4) em 1.742 combinações (versões 1–40, níveis L/M/Q/H, máscaras 0 e 5, modos numérico, alfanumérico e byte).
+- Decodificação com **jsQR** e **ZXing**. Nenhum dos dois lê todas as versões: nas versões 23, 24, 25, 37 e 39 um deles falha, e falha igual com a matriz da biblioteca de referência. Isso é limitação do leitor e não do encoder, mas significa que o QR não foi lido por dois leitores em todas as versões.
+- A escolha automática de máscara difere da biblioteca de referência em alguns textos (7 de 28 testados). O QR gerado continua válido; só a máscara escolhida pode ser outra.
 - Leitura dos formatos de barras (EAN-13, EAN-8, UPC-A, Code 128, ITF, ITF-14 e boleto) com o **ZXing**.
 
-> ⚠️ **Contraste**: o tema padrão atual desenha módulos claros sobre fundo escuro (QR "invertido"). Alguns leitores não leem esse formato. Para impressão ou uso geral, use `tema=light` (ou `cor` e `fundo` explícitos).
+> ⚠️ **Contraste**: na API o tema padrão é `light` (módulos escuros sobre fundo claro), que é o formato lido pelos leitores. Os temas `dark`, `ponte`, `emerald` e `blue` desenham módulos claros sobre fundo escuro (QR invertido). Num teste com jsQR esse formato **não foi lido**; use-os só para exibição em tela e confirme com o leitor que você usa.
 
 ---
 

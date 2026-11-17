@@ -151,6 +151,16 @@ await t('HTTP QR SVG por GET e POST', async () => {
   assert.equal(p.status, 200);
 });
 
+await t('HTTP: tema padrão da API é o claro (QR escuro sobre fundo claro, legível por leitores)', async () => {
+  const s = await (await call('/api/qrcode.svg?conteudo=PONTE')).text();
+  assert.ok(s.includes('fill="#0c1715"') && s.includes('fill="#ffffff"'));
+  assert.ok(!s.includes('#f8fafc'));
+  const b = await (await call('/api/barcode/ean13.svg?valor=789100010010')).text();
+  assert.ok(b.includes('fill="#ffffff"'));
+  const d = await (await call('/api/qrcode.svg?conteudo=PONTE&tema=dark')).text();
+  assert.ok(d.includes('#111827'));
+});
+
 await t('HTTP QR JSON e texto', async () => {
   const j = await (await call('/api/qrcode/json?conteudo=PONTE')).json();
   assert.equal(j.tamanho, j.modulos.length);

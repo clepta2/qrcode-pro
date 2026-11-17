@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code &amp; Código de Barras Pro Studio — QR ISO 18004, EAN, Code 128 e Boleto</title>
+  <meta name="description" content="Gerador de QR Code (Wi-Fi, WhatsApp, vCard, Pix), EAN-13, Code 128, ITF-14 e código de barras de boleto em SVG na borda Cloudflare Anycast.">
+  <link rel="stylesheet" href="ponte-suite.css">
+  <style>
+    .qr-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+    .qr-row > * { flex: 1; min-width: 110px; }
+    .qr-preview { display: flex; align-items: center; justify-content: center; min-height: 260px; padding: 16px; border-radius: var(--radius-md); background: var(--paper-elevated); border: 1px solid var(--line-light); }
+    .qr-preview svg { max-width: 100%; height: auto; }
+    .qr-meta { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+    .qr-msg { color: #ef4444; font-size: 13px; }
+    .qr-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 10px; }
+    pre.qr-code { background: #030712; color: #a5f3fc; padding: 12px; border-radius: 8px; font-family: var(--font-mono); font-size: 11.5px; overflow: auto; white-space: pre-wrap; word-break: break-all; margin-top: 10px; }
+  </style>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('ponte.theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+</head>
+<body>
+  <header class="ponte-header">
+    <div class="ponte-header-inner">
+      <div class="ponte-brand-block">
+        <a class="ponte-brand" href="https://ponte-marketplace.maputo2.workers.dev/#catalogo">
+          <svg class="ponte-brand-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="40" height="40" rx="10" fill="#a3e635"/>
+            <path d="M12 28V12L28 20L12 28Z" fill="#0c1715"/>
+          </svg>
+          <div class="ponte-brand-copy">
+            <strong>ponte</strong>
+            <small>QRCODE PRO · OZPRO</small>
+          </div>
+        </a>
+        <div class="ponte-breadcrumb">
+          <a href="https://ponte-marketplace.maputo2.workers.dev/#catalogo">Workspace</a>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+          <strong>QR Code &amp; Código de Barras Pro</strong>
+        </div>
+      </div>
+      <div class="ponte-topbar-actions">
+        <span class="ponte-status-edge"><span class="ponte-status-dot"></span> Cloudflare Anycast &lt;2ms</span>
+        <button class="ponte-theme-btn" id="theme-toggle-btn" aria-label="Alternar tema">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="ponte-container">
+    <div class="ponte-hero">
+      <div class="ponte-badges-bar">
+        <span class="ponte-badge mint">● QR ISO/IEC 18004 v1–40</span>
+        <span class="ponte-badge blue">▮▯ EAN · UPC · Code 128 · ITF</span>
+        <span class="ponte-badge purple">🧾 Boleto FEBRABAN</span>
+        <span class="ponte-badge amber">⚡ SVG sem dependências</span>
+      </div>
+      <h1>QR Code &amp; Código de Barras Pro Studio</h1>
+      <p>Gere QR Codes de texto, URL, Wi-Fi, WhatsApp, e-mail, localização e vCard, além de códigos de barras de produto e de boleto. Tudo sai em SVG vetorial, pronto para imprimir em qualquer tamanho.</p>
+    </div>
+
+    <div class="ponte-grid-2" style="align-items:start;">
+      <div class="ponte-card">
+        <div class="ponte-card-title"><h3>QR Code</h3></div>
+        <div class="qr-row">
+          <select id="qr-tipo" class="ponte-select" aria-label="Tipo de conteúdo">
+            <option value="texto">Texto / URL / Pix copia e cola</option>
+            <option value="wifi">Wi-Fi</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="email">E-mail</option>
+            <option value="telefone">Telefone</option>
+            <option value="geo">Localização</option>
+            <option value="vcard">Cartão de contato (vCard)</option>
+          </select>
+        </div>
+        <div id="qr-campos" class="qr-fields"></div>
+        <div class="qr-row">
+          <select id="qr-ecc" class="ponte-select" aria-label="Correção de erro"><option value="L">Correção L (7%)</option><option value="M" selected>Correção M (15%)</option><option value="Q">Correção Q (25%)</option><option value="H">Correção H (30%)</option></select>
+          <select id="qr-estilo" class="ponte-select" aria-label="Estilo"><option value="quadrado">Quadrado</option><option value="arredondado">Arredondado</option><option value="pontos">Pontos</option></select>
+          <select id="qr-tema" class="ponte-select" aria-label="Tema"><option value="light" selected>Claro (leitura segura)</option><option value="ponte">Ponte (mint)</option><option value="emerald">Emerald</option><option value="blue">Azul</option><option value="dark">Escuro (invertido)</option></select>
+        </div>
+        <div class="qr-preview" id="qr-preview"></div>
+        <div class="qr-meta" id="qr-meta"></div>
+        <div class="qr-row" style="margin-top:10px;">
+          <button class="ponte-btn" id="qr-baixar" style="flex:0 0 auto;">⬇ Baixar SVG</button>
+          <button class="ponte-btn ponte-btn-secondary" id="qr-copiar" style="flex:0 0 auto;">Copiar conteúdo</button>
+        </div>
+        <pre class="qr-code" id="qr-payload"></pre>
+      </div>
+
+      <div class="ponte-card">
+        <div class="ponte-card-title"><h3>Código de barras</h3></div>
+        <div class="qr-row">
+          <select id="br-formato" class="ponte-select" aria-label="Formato">
+            <option value="ean13">EAN-13 (produto)</option>
+            <option value="ean8">EAN-8</option>
+            <option value="upca">UPC-A</option>
+            <option value="code128">Code 128</option>
+            <option value="itf14">ITF-14 (caixa)</option>
+            <option value="itf">Interleaved 2 of 5</option>
+            <option value="boleto">Boleto FEBRABAN</option>
+          </select>
+        </div>
+        <div class="qr-row">
+          <input type="text" id="br-valor" class="ponte-input" value="789100010010" aria-label="Valor" style="flex:3;">
+          <select id="br-tema" class="ponte-select" aria-label="Tema"><option value="light" selected>Claro</option><option value="ponte">Ponte (mint)</option><option value="dark">Escuro</option></select>
+        </div>
+        <div class="qr-preview" id="br-preview" style="min-height:140px;"></div>
+        <div class="qr-meta" id="br-meta"></div>
+        <div class="qr-row" style="margin-top:10px;">
+          <button class="ponte-btn" id="br-baixar" style="flex:0 0 auto;">⬇ Baixar SVG</button>
+        </div>
+
+        <div class="ponte-card-title" style="margin-top:22px;"><h3>Validar GTIN / EAN</h3></div>
+        <div class="qr-row">
+          <input type="text" id="gt-valor" class="ponte-input" value="7891000100103" aria-label="GTIN">
+          <button class="ponte-btn" id="gt-validar" style="flex:0 0 auto;">Validar</button>
+        </div>
+        <div class="qr-meta" id="gt-res"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { gerarQrSvg } from './qr-engine.js';
+    import { gerarBarrasSvg, validarGtin, FORMATOS_BARRAS } from './barcode-engine.js';
+
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    // Campos e montagem de payload (mesma regra do endpoint /api/qrcode/:tipo.svg)
+    const CAMPOS = {
+      texto: [['conteudo', 'Conteúdo', 'https://ponte-marketplace.maputo2.workers.dev']],
+      wifi: [['ssid', 'Nome da rede', 'MinhaRede'], ['senha', 'Senha', '12345678']],
+      whatsapp: [['telefone', 'Telefone com DDD', '11999998888'], ['mensagem', 'Mensagem', 'Olá!']],
+      email: [['para', 'Para', 'contato@exemplo.com'], ['assunto', 'Assunto', 'Olá']],
+      telefone: [['telefone', 'Telefone', '+5511999998888']],
+      geo: [['lat', 'Latitude', '-23.5505'], ['lng', 'Longitude', '-46.6333']],
+      vcard: [['nome', 'Nome', 'Maria Silva'], ['empresa', 'Empresa', 'Ponte API'], ['telefone', 'Telefone', '+5511999998888'], ['email', 'E-mail', 'maria@exemplo.com']]
+    };
+    const wifiEsc = s => String(s).replace(/([\\;,:"])/g, '\\$1');
+    const vEsc = s => String(s).replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n');
+    function payload(tipo, v) {
+      switch (tipo) {
+        case 'texto': if (!v.conteudo) throw new Error('Informe o conteúdo.'); return v.conteudo;
+        case 'wifi': if (!v.ssid) throw new Error('Informe o nome da rede.'); return v.senha ? `WIFI:T:WPA;S:${wifiEsc(v.ssid)};P:${wifiEsc(v.senha)};;` : `WIFI:T:nopass;S:${wifiEsc(v.ssid)};;`;
+        case 'whatsapp': { const t = (v.telefone || '').replace(/\D/g, ''); if (t.length < 10) throw new Error('Telefone com DDD inválido.'); return `https://wa.me/${t.length <= 11 ? '55' + t : t}${v.mensagem ? '?text=' + encodeURIComponent(v.mensagem) : ''}`; }
+        case 'email': if (!v.para) throw new Error('Informe o destinatário.'); return `mailto:${v.para}${v.assunto ? '?subject=' + encodeURIComponent(v.assunto) : ''}`;
+        case 'telefone': if (!v.telefone) throw new Error('Informe o telefone.'); return `tel:${v.telefone.replace(/[^\d+]/g, '')}`;
+        case 'geo': { const la = Number(v.lat), lo = Number(v.lng); if (!Number.isFinite(la) || !Number.isFinite(lo) || Math.abs(la) > 90 || Math.abs(lo) > 180) throw new Error('Coordenadas inválidas.'); return `geo:${la},${lo}`; }
+        default: {
+          if (!v.nome) throw new Error('Informe o nome.');
+          const l = ['BEGIN:VCARD', 'VERSION:3.0', `FN:${vEsc(v.nome)}`];
+          if (v.empresa) l.push(`ORG:${vEsc(v.empresa)}`);
+          if (v.telefone) l.push(`TEL;TYPE=CELL:${vEsc(v.telefone)}`);
+          if (v.email) l.push(`EMAIL:${vEsc(v.email)}`);
+          l.push('END:VCARD');
+          return l.join('\n');
+        }
+      }
+    }
+
+    function montarCampos() {
+      $('qr-campos').innerHTML = CAMPOS[$('qr-tipo').value].map(([id, rotulo, ex]) =>
+        `<input type="text" class="ponte-input" data-campo="${id}" value="${esc(ex)}" placeholder="${esc(rotulo)}" aria-label="${esc(rotulo)}">`).join('');
+      $('qr-campos').querySelectorAll('input').forEach(i => i.addEventListener('input', renderQr));
+      renderQr();
+    }
+
+    let svgQr = '', conteudoQr = '', svgBr = '', nomeBr = '';
+    function renderQr() {
+      try {
+        const v = Object.fromEntries([...$('qr-campos').querySelectorAll('input')].map(i => [i.dataset.campo, i.value]));
+        conteudoQr = payload($('qr-tipo').value, v);
+        const r = gerarQrSvg(conteudoQr, { ecc: $('qr-ecc').value, estilo: $('qr-estilo').value, tema: $('qr-tema').value, tamanho: 260 });
+        svgQr = r.svg;
+        $('qr-preview').innerHTML = svgQr;
+        $('qr-meta').innerHTML = `Versão ${r.qr.versao} (${r.qr.tamanho}×${r.qr.tamanho}) • modo ${r.qr.modo} • correção ${r.qr.ecc} • máscara ${r.qr.mascara}${$('qr-tema').value === 'dark' ? '<br><strong style="color:#f59e0b">⚠ Tema escuro (módulos claros): alguns leitores de QR não leem códigos invertidos.</strong>' : ''}`;
+        $('qr-payload').textContent = conteudoQr;
+      } catch (e) {
+        svgQr = '';
+        $('qr-preview').innerHTML = `<span class="qr-msg">${esc(e.message)}</span>`;
+        $('qr-meta').textContent = '';
+        $('qr-payload').textContent = '';
+      }
+    }
+
+    const EXEMPLOS = { ean13: '789100010010', ean8: '9638507', upca: '03600029145', code128: 'PONTE-2026', itf14: '1789100010010', itf: '1234567890', boleto: '34191.79001 01043.510047 91020.150008 5 84230000016000' };
+    function renderBarras() {
+      try {
+        const r = gerarBarrasSvg($('br-formato').value, $('br-valor').value, { tema: $('br-tema').value });
+        svgBr = r.svg;
+        nomeBr = `${r.formato}-${r.texto.slice(0, 20)}`;
+        $('br-preview').innerHTML = svgBr;
+        $('br-meta').innerHTML = `${esc(r.nome)} • ${r.bits.length} módulos • conteúdo codificado: <code>${esc(r.texto)}</code>`;
+      } catch (e) {
+        svgBr = '';
+        $('br-preview').innerHTML = `<span class="qr-msg">${esc(e.message)}</span>`;
+        $('br-meta').textContent = '';
+      }
+    }
+
+    function baixar(svg, nome) {
+      if (!svg) return;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+      a.download = nome;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    $('qr-tipo').addEventListener('change', montarCampos);
+    ['qr-ecc', 'qr-estilo', 'qr-tema'].forEach(id => $(id).addEventListener('change', renderQr));
+    $('br-formato').addEventListener('change', () => { $('br-valor').value = EXEMPLOS[$('br-formato').value]; renderBarras(); });
+    $('br-valor').addEventListener('input', renderBarras);
+    $('br-tema').addEventListener('change', renderBarras);
+    $('qr-baixar').addEventListener('click', () => baixar(svgQr, 'qrcode.svg'));
+    $('qr-copiar').addEventListener('click', () => navigator.clipboard?.writeText(conteudoQr));
+    $('br-baixar').addEventListener('click', () => baixar(svgBr, `${nomeBr}.svg`));
+    $('gt-validar').addEventListener('click', () => {
+      const r = validarGtin($('gt-valor').value);
+      $('gt-res').innerHTML = r.tipo
+        ? `<strong style="color:${r.valido ? '#10b981' : '#ef4444'}">${r.valido ? '✓ VÁLIDO' : '✗ INVÁLIDO'}</strong> • ${esc(r.tipo)} • DV informado <code>${r.digitoInformado}</code> / esperado <code>${r.digitoEsperado}</code>${r.paisGs1 ? ' • ' + esc(r.paisGs1) : ''}`
+        : esc(r.motivo);
+    });
+
+    $('theme-toggle-btn').addEventListener('click', () => {
+      const next = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('ponte.theme', next);
+    });
+
+    montarCampos();
+    renderBarras();
+    $('gt-validar').click();
+  </script>
+</body>
+</html>

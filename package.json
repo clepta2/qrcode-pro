@@ -1,0 +1,33 @@
+{
+  "name": "qrcode-pro",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "API e SDK Oficial de QR Code (ISO/IEC 18004) e Códigos de Barras (EAN-13, EAN-8, UPC-A, Code 128, ITF-14 e boleto FEBRABAN) em SVG vetorial, 100% nativo e sem dependências, na borda Cloudflare Anycast (<2ms).",
+  "main": "qrcode-pro.js",
+  "module": "qrcode-pro.js",
+  "scripts": {
+    "test": "node test.js && node test-api.js",
+    "deploy": "wrangler deploy",
+    "security:check": "node scripts/security-guard.js"
+  },
+  "keywords": [
+    "qrcode",
+    "qr-code",
+    "barcode",
+    "ean13",
+    "code128",
+    "itf14",
+    "boleto",
+    "gs1",
+    "svg",
+    "cloudflare-worker",
+    "anycast",
+    "sdk"
+  ],
+  "author": "clepta2 <clepta2@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clepta2/qrcode-pro.git"
+  }
+}

@@ -136,6 +136,14 @@ await t('Barras SVG: estrutura, escape e opção de texto', () => {
   assert.ok(!gerarBarrasSvg('ean13', '789100010010', { texto: false }).svg.includes('<text'));
 });
 
+await t('HTTP QR com logo central SVG e elevação automática para ECC H', async () => {
+  const g = await call('/api/qrcode.svg?conteudo=00020126360014BR.GOV.BCB.PIX...&logo=pix');
+  assert.equal(g.status, 200);
+  const svg = await g.text();
+  assert.ok(svg.includes('#32bcad'), 'Logo Pix presente no SVG com cor oficial');
+  assert.ok(svg.includes('<rect'), 'Caixa central de isolamento presente');
+});
+
 await t('HTTP /health lista formatos e tipos', async () => {
   const b = await (await call('/health')).json();
   assert.equal(b.ok, true);

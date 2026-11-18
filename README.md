@@ -45,7 +45,7 @@ O codificador de QR foi conferido por três métodos:
 
 | Método | Rota | Descrição |
 |---|---|---|
-| GET/POST | `/api/qrcode.svg?conteudo=&ecc=M&tamanho=320&tema=light&estilo=quadrado` | QR Code em SVG (até 4.000 caracteres) |
+| GET/POST | `/api/qrcode.svg?conteudo=&ecc=M&tamanho=320&tema=light&logo=pix` | QR Code em SVG com suporte a logo central (`pix`, `whatsapp`, `wifi`, `ponte`) |
 | GET/POST | `/api/qrcode/json?conteudo=` | Matriz de módulos |
 | GET | `/api/qrcode/texto?conteudo=` | Versão em texto para terminal |
 | GET/POST | `/api/qrcode/:tipo.svg` | `wifi`, `whatsapp`, `email`, `telefone`, `sms`, `geo`, `vcard`, `url` |

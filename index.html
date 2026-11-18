@@ -81,6 +81,7 @@
           <select id="qr-ecc" class="ponte-select" aria-label="Correção de erro"><option value="L">Correção L (7%)</option><option value="M" selected>Correção M (15%)</option><option value="Q">Correção Q (25%)</option><option value="H">Correção H (30%)</option></select>
           <select id="qr-estilo" class="ponte-select" aria-label="Estilo"><option value="quadrado">Quadrado</option><option value="arredondado">Arredondado</option><option value="pontos">Pontos</option></select>
           <select id="qr-tema" class="ponte-select" aria-label="Tema"><option value="light" selected>Claro (leitura segura)</option><option value="ponte">Ponte (mint)</option><option value="emerald">Emerald</option><option value="blue">Azul</option><option value="dark">Escuro (invertido)</option></select>
+          <select id="qr-logo" class="ponte-select" aria-label="Logo central"><option value="" selected>Sem logo</option><option value="pix">Logo Pix Oficial</option><option value="whatsapp">Logo WhatsApp</option><option value="wifi">Ícone Wi-Fi</option><option value="ponte">Logo Ponte API</option></select>
         </div>
         <div class="qr-preview" id="qr-preview"></div>
         <div class="qr-meta" id="qr-meta"></div>
@@ -175,7 +176,7 @@
       try {
         const v = Object.fromEntries([...$('qr-campos').querySelectorAll('input')].map(i => [i.dataset.campo, i.value]));
         conteudoQr = payload($('qr-tipo').value, v);
-        const r = gerarQrSvg(conteudoQr, { ecc: $('qr-ecc').value, estilo: $('qr-estilo').value, tema: $('qr-tema').value, tamanho: 260 });
+        const r = gerarQrSvg(conteudoQr, { ecc: $('qr-ecc').value, estilo: $('qr-estilo').value, tema: $('qr-tema').value, logo: $('qr-logo').value, tamanho: 260 });
         svgQr = r.svg;
         $('qr-preview').innerHTML = svgQr;
         $('qr-meta').innerHTML = `Versão ${r.qr.versao} (${r.qr.tamanho}×${r.qr.tamanho}) • modo ${r.qr.modo} • correção ${r.qr.ecc} • máscara ${r.qr.mascara}${$('qr-tema').value === 'dark' ? '<br><strong style="color:#f59e0b">⚠ Tema escuro (módulos claros): alguns leitores de QR não leem códigos invertidos.</strong>' : ''}`;
@@ -213,7 +214,7 @@
     }
 
     $('qr-tipo').addEventListener('change', montarCampos);
-    ['qr-ecc', 'qr-estilo', 'qr-tema'].forEach(id => $(id).addEventListener('change', renderQr));
+    ['qr-ecc', 'qr-estilo', 'qr-tema', 'qr-logo'].forEach(id => $(id).addEventListener('change', renderQr));
     $('br-formato').addEventListener('change', () => { $('br-valor').value = EXEMPLOS[$('br-formato').value]; renderBarras(); });
     $('br-valor').addEventListener('input', renderBarras);
     $('br-tema').addEventListener('change', renderBarras);

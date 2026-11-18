@@ -433,6 +433,33 @@ export const TEMAS_QR = {
   }
 };
 
+export const LOGOS_PRESETS = {
+  pix: {
+    cor: '#32bcad',
+    fundo: '#ffffff',
+    viewBox: '0 0 512 512',
+    path: '<path fill="#32bcad" d="M112.5 124.7l64.8-64.8c43.6-43.6 114.4-43.6 158 0l64.8 64.8c43.6 43.6 43.6 114.4 0 158l-64.8 64.8c-43.6 43.6-114.4 43.6-158 0l-64.8-64.8c-43.6-43.6-43.6-114.4 0-158zm129.4-36.2c-15.6-15.6-41-15.6-56.6 0l-45.2 45.2c-15.6 15.6-15.6 41 0 56.6l45.2 45.2c15.6 15.6 41 15.6 56.6 0l45.2-45.2c15.6-15.6 15.6-41 0-56.6l-45.2-45.2zm89.1 89.1l-45.2-45.2c-3.8-3.8-8.3-6.6-13.1-8.5l34.8 34.8c15.6 15.6 15.6 41 0 56.6l-58 58c-15.6 15.6-41 15.6-56.6 0l-34.8-34.8c1.9 4.8 4.7 9.3 8.5 13.1l45.2 45.2c15.6 15.6 41 15.6 56.6 0l62.6-62.6c15.6-15.6 15.6-41 0-56.6z"/>'
+  },
+  whatsapp: {
+    cor: '#25d366',
+    fundo: '#ffffff',
+    viewBox: '0 0 24 24',
+    path: '<path fill="#25d366" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.41a8.214 8.214 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.09-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.01-1.24-.74-.66-1.24-1.48-1.39-1.73-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.45-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.66.31-.23.25-.87.85-.87 2.07s.89 2.4 1.01 2.56c.13.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.53.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.07-.1-.23-.17-.48-.29z"/>'
+  },
+  wifi: {
+    cor: '#3b82f6',
+    fundo: '#ffffff',
+    viewBox: '0 0 24 24',
+    path: '<path fill="#3b82f6" d="M12 18c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-4.9-3.5c2.7-2.7 7.1-2.7 9.8 0l1.4-1.4c-3.5-3.5-9.2-3.5-12.7 0l1.5 1.4zm-2.8-2.8c4.3-4.3 11.2-4.3 15.5 0l1.4-1.4c-5.1-5.1-13.3-5.1-18.4 0l1.5 1.4z"/>'
+  },
+  ponte: {
+    cor: '#a3e635',
+    fundo: '#0b0f19',
+    viewBox: '0 0 40 40',
+    path: '<rect width="40" height="40" rx="10" fill="#a3e635"/><path d="M12 28V12L28 20L12 28Z" fill="#0c1715"/>'
+  }
+};
+
 function corValida(c, padrao) {
   if (c === undefined || c === null || c === '') return padrao;
   const s = String(c).trim();
@@ -449,7 +476,12 @@ function corValida(c, padrao) {
  * @param {{ ecc?: string, tamanho?: number, margem?: number, cor?: string, fundo?: string, estilo?: 'quadrado'|'arredondado'|'pontos', tema?: 'dark'|'ponte'|'emerald'|'blue'|'transparent'|'light', borda?: string|boolean, raio?: number }} [opcoes]
  */
 export function gerarQrSvg(texto, opcoes = {}) {
-  const qr = gerarQr(texto, opcoes);
+  const opcoesEfetivas = { ...opcoes };
+  if (opcoes.logo) {
+    opcoesEfetivas.ecc = 'H';
+    opcoesEfetivas.aumentarEcc = false;
+  }
+  const qr = gerarQr(texto, opcoesEfetivas);
   const temaCfg = TEMAS_QR[String(opcoes.tema || '').toLowerCase()] || TEMAS_QR.dark;
 
   const margem = Math.max(0, Math.min(20, parseInt(opcoes.margem ?? 4, 10) || 0));
@@ -481,8 +513,27 @@ export function gerarQrSvg(texto, opcoes = {}) {
     fundoElemento = `<rect width="100%" height="100%" fill="${fundo}"${strokeAttr}${rxAttr}/>`;
   }
 
+  // ── LOGO CENTRAL SOBREPOSTO COM ÁREA DE ISOLAMENTO ──
+  let logoSvg = '';
+  if (opcoes.logo) {
+    const nomeLogo = String(opcoes.logo).toLowerCase();
+    const preset = LOGOS_PRESETS[nomeLogo];
+    if (preset) {
+      // Área central: ocupa aproximadamente 24% da matriz de dados
+      const logoTamanho = Math.max(5, Math.floor(qr.tamanho * 0.24));
+      const centroX = margem + (qr.tamanho - logoTamanho) / 2;
+      const centroY = margem + (qr.tamanho - logoTamanho) / 2;
+      const corFundoLogo = fundo !== 'none' ? fundo : '#ffffff';
+
+      // Caixa de respiro branca/fundo com borda sutil
+      logoSvg = `<rect x="${centroX - 0.5}" y="${centroY - 0.5}" width="${logoTamanho + 1}" height="${logoTamanho + 1}" rx="1" fill="${corFundoLogo}" stroke="${corBorda !== 'none' ? corBorda : '#e2e8f0'}" stroke-width="0.3"/>`;
+      // SVG do logo embutido
+      logoSvg += `<svg x="${centroX}" y="${centroY}" width="${logoTamanho}" height="${logoTamanho}" viewBox="${preset.viewBox}">${preset.path}</svg>`;
+    }
+  }
+
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${lado} ${lado}" width="${px}" height="${px}" shape-rendering="crispEdges" role="img" aria-label="QR Code">` +
-    fundoElemento + desenho + '</svg>';
+    fundoElemento + desenho + logoSvg + '</svg>';
   return { svg, qr };
 }
 
@@ -504,4 +555,4 @@ export function gerarQrTexto(texto, opcoes = {}) {
   return linhas.join('\n');
 }
 
-export default { gerarQr, gerarQrSvg, gerarQrTexto, detectarModo, NIVEIS_ECC };
+export default { gerarQr, gerarQrSvg, gerarQrTexto, detectarModo, NIVEIS_ECC, LOGOS_PRESETS };

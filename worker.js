@@ -108,6 +108,7 @@ const opcoesQr = p => ({
   tema: p.tema || 'light',
   borda: p.borda === 'false' ? false : p.borda,
   raio: p.raio,
+  logo: p.logo,
   mascara: p.mascara !== undefined && p.mascara !== '' ? Number(p.mascara) : undefined,
   aumentarEcc: p.aumentarEcc === undefined ? true : p.aumentarEcc !== 'false' && p.aumentarEcc !== false
 });
